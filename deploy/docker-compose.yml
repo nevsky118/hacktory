@@ -1,0 +1,40 @@
+version: '3'
+services:
+  server:
+    build:
+      context: ../src/server
+      dockerfile: Dockerfile
+    environment:
+      PGHOST: db
+      PGUSER: postgres
+      PGPASSWORD: 1111
+      PGDATABASE: postgres
+      PGPORT: 5432
+    ports:
+      - '8000:8000'
+    volumes:
+      - ./flag.txt:/usr/src/app/server/flag.txt
+    networks:
+      - my_network
+  client:
+    build:
+      context: ../src/client
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./flag.txt:/usr/src/app/client/flag.txt
+    networks:
+      - my_network
+  db:
+    image: postgres
+    restart: always
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_PASSWORD: 1111
+    networks:
+      - my_network
+networks:
+  my_network:
+    driver: bridge
